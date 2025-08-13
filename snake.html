@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Реалистичная Змейка</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -16,24 +17,32 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Poppins', sans-serif;
             overflow: hidden;
+            color: #fff;
         }
         
         #game-container {
             position: relative;
             width: 800px;
             height: 600px;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-            border-radius: 15px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
             overflow: hidden;
+            transform: translateY(0);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        #game-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 30px 60px -10px rgba(0, 0, 0, 0.6);
         }
         
         #game-canvas {
             background: linear-gradient(to bottom, #0a3d62, #1e5799);
             display: block;
-            border-radius: 15px;
+            border-radius: 20px;
         }
         
         .screen {
@@ -46,91 +55,151 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: rgba(10, 30, 50, 0.9);
+            background: rgba(5, 20, 35, 0.95);
+            backdrop-filter: blur(5px);
             color: white;
             text-align: center;
-            padding: 30px;
-            border-radius: 15px;
+            padding: 40px;
+            border-radius: 20px;
             z-index: 10;
-            transition: opacity 0.5s;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            opacity: 1;
+            transform: scale(1);
         }
         
         .hidden {
             opacity: 0;
             pointer-events: none;
+            transform: scale(0.9);
         }
         
         h1 {
-            font-size: 48px;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px #00f7ff;
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            background: linear-gradient(to right, #f7971e, #ffd200);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            text-shadow: 0 2px 10px rgba(247, 151, 30, 0.3);
+            letter-spacing: 1px;
         }
         
         h2 {
-            font-size: 36px;
-            margin-bottom: 20px;
-            color: #ffcc70;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #ffd166;
+            font-weight: 600;
         }
         
         p {
-            font-size: 20px;
-            margin: 10px 0;
-            line-height: 1.6;
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+            line-height: 1.7;
             max-width: 700px;
+            color: rgba(255, 255, 255, 0.8);
         }
         
         .highlight {
-            color: #ffcc70;
-            font-weight: bold;
+            color: #ffd166;
+            font-weight: 600;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, #f7971e, #ffd200);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+        
+        .highlight:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
         }
         
         #start-button, #restart-button {
-            margin-top: 30px;
-            padding: 15px 40px;
-            font-size: 22px;
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            margin-top: 2rem;
+            padding: 1rem 2.5rem;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #f7971e, #ffd200);
             border: none;
             border-radius: 50px;
-            color: white;
+            color: #1a2a3a;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(247, 151, 30, 0.4);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        #start-button::before, #restart-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ffd200, #f7971e);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
         
         #start-button:hover, #restart-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-            background: linear-gradient(to right, #ff6b4a, #ffa07a);
+            box-shadow: 0 8px 25px rgba(247, 151, 30, 0.5);
+        }
+        
+        #start-button:hover::before, #restart-button:hover::before {
+            opacity: 1;
         }
         
         #stats {
             position: absolute;
             top: 20px;
             right: 20px;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
             color: white;
             padding: 15px 25px;
-            border-radius: 10px;
-            font-size: 20px;
+            border-radius: 15px;
+            font-size: 1rem;
             z-index: 5;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
         
         .stat-item {
             display: flex;
             justify-content: space-between;
             min-width: 180px;
+            align-items: center;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
         }
         
         .stat-value {
-            color: #ffcc70;
-            font-weight: bold;
+            color: #ffd166;
+            font-weight: 600;
+            font-size: 1.1rem;
         }
         
         .bite-effect {
@@ -138,9 +207,10 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,200,0,0.8) 0%, rgba(255,100,0,0) 70%);
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.8) 0%, rgba(255, 100, 0, 0) 70%);
             pointer-events: none;
             animation: biteAnimation 0.5s forwards;
+            z-index: 2;
         }
         
         @keyframes biteAnimation {
@@ -153,14 +223,87 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            background: linear-gradient(to right, #f7971e, #ffd200);
             pointer-events: none;
             animation: particleMove 1s forwards;
+            z-index: 2;
         }
         
         @keyframes particleMove {
             0% { transform: translate(0, 0); opacity: 1; }
             100% { transform: translate(var(--tx), var(--ty)); opacity: 0; }
+        }
+        
+        .controls-info {
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .controls-info p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        .key {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin: 0 5px;
+            font-weight: 600;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .game-title {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+        
+        .game-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, #f7971e, #ffd200);
+            border-radius: 3px;
+        }
+        
+        .result-stats {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .result-stats .stat-item {
+            min-width: 250px;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .result-stats .stat-item:last-child {
+            border-bottom: none;
+        }
+        
+        .watermark {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
         }
     </style>
 </head>
@@ -170,46 +313,66 @@
         
         <div id="stats">
             <div class="stat-item">
-                <span>Очки:</span>
+                <span class="stat-label">Очки:</span>
                 <span id="score-value" class="stat-value">0</span>
             </div>
             <div class="stat-item">
-                <span>Время:</span>
+                <span class="stat-label">Время:</span>
                 <span id="time-value" class="stat-value">00:00</span>
             </div>
             <div class="stat-item">
-                <span>Длина:</span>
+                <span class="stat-label">Длина:</span>
                 <span id="length-value" class="stat-value">1</span>
             </div>
         </div>
         
         <div id="start-screen" class="screen">
-            <h1>Реалистичная Змейка</h1>
+            <div class="game-title">
+                <h1>Реалистичная Змейка</h1>
+            </div>
             <h2>Как играть</h2>
             <p>Управляйте змейкой с помощью <span class="highlight">клавиш со стрелками</span> на клавиатуре.</p>
             <p>Собирайте яблоки, чтобы увеличивать длину змейки и зарабатывать очки.</p>
             <p>Если змейка уходит за границы поля, она появляется с противоположной стороны.</p>
             <p>Избегайте столкновения змейки с самой собой!</p>
-            <p>Наслаждайтесь реалистичной анимацией, когда змейка кусает яблоко.</p>
+            
+            <div class="controls-info">
+                <div style="margin: 15px 0;">
+                    <span class="key">↑</span>
+                    <span class="key">↓</span>
+                    <span class="key">←</span>
+                    <span class="key">→</span>
+                </div>
+                <p>Используйте стрелки для управления</p>
+            </div>
+            
             <button id="start-button">Начать игру</button>
+            <div class="watermark">© 2023 Реалистичная Змейка</div>
         </div>
         
         <div id="game-over-screen" class="screen hidden">
-            <h1>Игра окончена!</h1>
+            <div class="game-title">
+                <h1>Игра окончена!</h1>
+            </div>
             <h2>Ваш результат</h2>
-            <div class="stat-item">
-                <span>Очки:</span>
-                <span id="final-score" class="stat-value">0</span>
+            
+            <div class="result-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Очки:</span>
+                    <span id="final-score" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Время игры:</span>
+                    <span id="final-time" class="stat-value">00:00</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Длина змейки:</span>
+                    <span id="final-length" class="stat-value">1</span>
+                </div>
             </div>
-            <div class="stat-item">
-                <span>Время игры:</span>
-                <span id="final-time" class="stat-value">00:00</span>
-            </div>
-            <div class="stat-item">
-                <span>Длина змейки:</span>
-                <span id="final-length" class="stat-value">1</span>
-            </div>
+            
             <button id="restart-button">Играть снова</button>
+            <div class="watermark">© 2023 Реалистичная Змейка</div>
         </div>
     </div>
 
@@ -480,8 +643,8 @@
                 
                 if (i === 0) {
                     // Голова змеи
-                    gradient.addColorStop(0, "#ffcc70");
-                    gradient.addColorStop(1, "#c06c28");
+                    gradient.addColorStop(0, "#ffd166");
+                    gradient.addColorStop(1, "#ef8354");
                 } else {
                     // Тело змеи
                     gradient.addColorStop(0, "#8a9e3f");
@@ -587,8 +750,8 @@
                 food.y * gridSize + gridSize/2, 
                 gridSize
             );
-            gradient.addColorStop(0, "#ff3300");
-            gradient.addColorStop(1, "#b30000");
+            gradient.addColorStop(0, "#ff5e62");
+            gradient.addColorStop(1, "#ff2400");
             
             ctx.fillStyle = gradient;
             
