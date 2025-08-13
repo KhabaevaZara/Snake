@@ -390,7 +390,6 @@
         const finalScore = document.getElementById('final-score');
         const finalTime = document.getElementById('final-time');
         const finalLength = document.getElementById('final-length');
-        
         const gridSize = 20;
         const gridWidth = canvas.width / gridSize;
         const gridHeight = canvas.height / gridSize;
@@ -405,7 +404,6 @@
         let gameLoop;
         let startTime;
         let currentTime;
-        
         // Инициализация игры
         function initGame() {
             // Начальное положение змеи
@@ -414,7 +412,6 @@
                 {x: 4, y: 10},
                 {x: 3, y: 10}
             ];
-            
             generateFood();
             
             direction = 'right';
@@ -425,13 +422,11 @@
             
             updateStats();
         }
-        
         // Генерация яблока
         function generateFood() {
             // Генерируем новую позицию для яблока
             let newFoodPosition;
             let foodOnSnake;
-            
             do {
                 foodOnSnake = false;
                 newFoodPosition = {
