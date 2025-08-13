@@ -422,11 +422,13 @@
             
             updateStats();
         }
+        
         // Генерация яблока
         function generateFood() {
             // Генерируем новую позицию для яблока
             let newFoodPosition;
             let foodOnSnake;
+            
             do {
                 foodOnSnake = false;
                 newFoodPosition = {
@@ -580,7 +582,9 @@
         }
         
         // Рисуем фон
+        
         function drawBackground() {
+            
             // Градиентный фон
             const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
             gradient.addColorStop(0, "#0a3d62");
@@ -612,6 +616,7 @@
             }
             
             // Горизонтальные линии
+            
             for (let y = 0; y <= canvas.height; y += gridSize) {
                 ctx.beginPath();
                 ctx.moveTo(0, y);
